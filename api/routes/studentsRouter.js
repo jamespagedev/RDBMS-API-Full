@@ -41,7 +41,12 @@ router.get('/:id', (req, res) => {
 router.get('/:id/stretch', (req, res) => {
   db('students')
     .join('cohorts', 'students.cohort_id', 'cohorts.id')
-    .select('students.id', 'students.name', 'cohorts.name as cohort')
+    .select(
+      'students.id',
+      'students.created_at',
+      'students.updated_at',
+      'cohorts.name as cohort'
+    )
     .where({ 'students.id': req.params.id })
     .then(student => {
       if (student.length !== 0) {

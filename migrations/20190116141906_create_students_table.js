@@ -4,7 +4,7 @@ exports.up = function(knex, Promise) {
     tbl.increments();
 
     // other fields
-    tbl.text('name', 255); // first argument is the column name, second argument(optional) is the limit size (default 255)
+    tbl.text('name', 255).unique(); // first argument is the column name, second argument(optional) is the limit size (default 255)
 
     // timestamps
     tbl.timestamps(true, true); // Creates two columns "created at" and "updated at".
@@ -17,7 +17,6 @@ exports.up = function(knex, Promise) {
       .inTable('cohorts');
 
     // constraints
-    tbl.unique('name', 'uq_students_name'); // makes name column unique
   });
 };
 
