@@ -23,10 +23,26 @@ router.get('/', (req, res) => {
     .catch(err => res.status(500).json(err));
 });
 
-// /api/students/:id (get single)
+// /api/students/:id (get single) -> MVP
 router.get('/:id', (req, res) => {
   db('students')
     .where({ id: req.params.id })
+    .then(student => {
+      if (student.length !== 0) {
+        res.status(200).json(student);
+      } else {
+        res.status(404).json({ error: 'student not found' });
+      }
+    })
+    .catch(err => res.status(500).json(err));
+});
+
+// /api/students/:id/stretch (get single) -> stretch
+router.get('/:id/stretch', (req, res) => {
+  db('students')
+    .join('cohorts', 'students.cohort_id', 'cohorts.id')
+    .select('students.id', 'students.name', 'cohorts.name as cohort')
+    .where({ 'students.id': req.params.id })
     .then(student => {
       if (student.length !== 0) {
         res.status(200).json(student);
@@ -88,11 +104,9 @@ router.put('/:id', (req, res) => {
             if (count) {
               res.status(200).json(count);
             } else {
-              res
-                .status(404)
-                .json({
-                  error: `student with ID '${req.params.id}' not found`
-                });
+              res.status(404).json({
+                error: `student with ID '${req.params.id}' not found`
+              });
             }
           })
           .catch(err => res.status(500).json(err));
